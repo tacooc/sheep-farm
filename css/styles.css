@@ -1,0 +1,1270 @@
+/* styles.css - أنماط نظام إدارة مزرعة الأغنام */
+
+/* ==========================================================================
+   المتغيرات الرئيسية
+   ========================================================================== */
+
+   :root {
+    /* الألوان */
+    --primary-color: #3498db;
+    --primary-dark: #2980b9;
+    --secondary-color: #2c3e50;
+    --success-color: #27ae60;
+    --success-light: #2ecc71;
+    --warning-color: #f39c12;
+    --warning-light: #e67e22;
+    --danger-color: #e74c3c;
+    --danger-dark: #c0392b;
+    --info-color: #17a2b8;
+
+    /* ألوان الخلفية */
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --header-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+
+    /* الظلال */
+    --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.1);
+    --shadow-button: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+    /* الحدود */
+    --border-radius: 10px;
+    --border-radius-large: 20px;
+    --border-color: #e9ecef;
+
+    /* المسافات */
+    --spacing-small: 10px;
+    --spacing-medium: 20px;
+    --spacing-large: 30px;
+
+    /* الخطوط */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-small: 12px;
+    --font-size-normal: 14px;
+    --font-size-medium: 16px;
+    --font-size-large: 18px;
+    --font-size-xlarge: 24px;
+
+    /* الانتقالات */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ==========================================================================
+   إعادة تعيين الأنماط الافتراضية
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================================================
+   العناصر الأساسية
+   ========================================================================== */
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    padding: var(--spacing-medium);
+    line-height: 1.6;
+    color: #333;
+    direction: rtl;
+}
+
+/* ==========================================================================
+   التخطيط الرئيسي
+   ========================================================================== */
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-medium);
+    overflow: hidden;
+}
+
+/* الرأس */
+.header {
+    background: var(--header-gradient);
+    color: white;
+    padding: var(--spacing-large);
+    text-align: center;
+    position: relative;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header p {
+    font-size: var(--font-size-large);
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   التنقل
+   ========================================================================== */
+
+.nav-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 2px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.nav-tab {
+    flex: 1;
+    min-width: 120px;
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-medium);
+    font-weight: bold;
+    transition: all var(--transition-normal);
+    color: #495057;
+}
+
+.nav-tab.active {
+    background: linear-gradient(135deg, var(--success-color), var(--success-light));
+    color: white;
+    transform: translateY(-2px);
+}
+
+.nav-tab:hover:not(.active) {
+    background: var(--border-color);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   محتوى التبويبات
+   ========================================================================== */
+
+.tab-content {
+    display: none;
+    padding: var(--spacing-large);
+    animation: fadeIn var(--transition-normal);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ==========================================================================
+   الإحصائيات
+   ========================================================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-medium);
+    margin-bottom: var(--spacing-large);
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    transition: transform var(--transition-normal);
+    border: 1px solid var(--border-color);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-small);
+}
+
+.stat-label {
+    font-size: var(--font-size-medium);
+    color: #7f8c8d;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   النماذج
+   ========================================================================== */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-medium);
+    margin-bottom: var(--spacing-large);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: var(--font-size-normal);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-medium);
+    transition: all var(--transition-normal);
+    background: white;
+    font-family: var(--font-family);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-group input:disabled,
+.form-group input[readonly] {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: var(--spacing-medium);
+    padding-top: var(--spacing-medium);
+    border-top: 1px solid var(--border-color);
+}
+
+/* ==========================================================================
+   الأزرار
+   ========================================================================== */
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: var(--font-size-medium);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    margin: 5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color), var(--success-light));
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning-color), var(--warning-light));
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color), var(--danger-dark));
+    color: white;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, var(--info-color), #138496);
+    color: white;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: var(--font-size-small);
+    min-width: 80px;
+}
+
+/* ==========================================================================
+   الجداول
+   ========================================================================== */
+
+.search-box {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-medium);
+    margin-bottom: var(--spacing-medium);
+    background: white;
+    transition: all var(--transition-normal);
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.table-container {
+    background: white;
+    border-radius: 15px;
+    overflow: auto;
+    box-shadow: var(--shadow-light);
+    margin-top: var(--spacing-medium);
+    border: 1px solid var(--border-color);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-normal);
+}
+
+.data-table th {
+    background: linear-gradient(135deg, #34495e, var(--secondary-color));
+    color: white;
+    padding: 15px 12px;
+    text-align: center;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background var(--transition-normal);
+    vertical-align: middle;
+}
+
+.data-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* ==========================================================================
+   الحالات والتصنيفات
+   ========================================================================== */
+
+.status-alive {
+    background: #d4edda;
+    color: #155724;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: var(--font-size-small);
+}
+
+.status-dead {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: var(--font-size-small);
+}
+
+.status-sold {
+    background: #fff3cd;
+    color: #856404;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: var(--font-size-small);
+}
+
+.weight-change {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.weight-increase {
+    color: #155724;
+    background: #d4edda;
+}
+
+.weight-decrease {
+    color: #721c24;
+    background: #f8d7da;
+}
+
+.weight-same {
+    color: #856404;
+    background: #fff3cd;
+}
+
+/* ==========================================================================
+   النوافذ المنبثقة
+   ========================================================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: var(--border-radius-large);
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    animation: slideIn 0.3s;
+}
+
+.modal-header {
+    background: var(--header-gradient);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.close:hover {
+    opacity: 0.8;
+}
+
+/* جدول تاريخ الوزن */
+.weight-history-table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.weight-history-table th {
+    background: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.weight-history-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* ==========================================================================
+   التنبيهات
+   ========================================================================== */
+
+.alert {
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-medium);
+    font-weight: 600;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* ==========================================================================
+   مؤشر التحميل
+   ========================================================================== */
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-message {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* ==========================================================================
+   عناصر إضافية
+   ========================================================================== */
+
+.help-text {
+    font-size: var(--font-size-small);
+    color: #6c757d;
+    margin-top: 4px;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.report-actions {
+    text-align: center;
+    margin: var(--spacing-large) 0;
+}
+
+.pregnant-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ffeeba;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* تنسيق المعاملات المالية */
+.transaction-income {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.transaction-expense {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.balance-positive {
+    color: var(--success-color);
+}
+
+.balance-negative {
+    color: var(--danger-color);
+}
+
+.balance-zero {
+    color: var(--primary-color);
+}
+
+/* تنسيق الحظائر */
+.pen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-medium);
+    margin-top: var(--spacing-medium);
+}
+
+.pen-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
+    transition: transform var(--transition-normal);
+}
+
+.pen-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+.pen-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pen-header h3 {
+    margin: 0;
+    font-size: var(--font-size-large);
+}
+
+.pen-body {
+    padding: 15px;
+}
+
+.pen-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pen-info-row:last-child {
+    border-bottom: none;
+}
+
+.pen-feed-info {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 2px solid var(--border-color);
+}
+
+.pen-feed-info h4 {
+    margin: 0 0 10px 0;
+    color: var(--secondary-color);
+}
+
+.pen-actions {
+    padding: 15px;
+    background: #f8f9fa;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.pen-details-header {
+    margin-bottom: 20px;
+}
+
+.feed-summary {
+    margin: 20px 0;
+}
+
+/* ==========================================================================
+   الحركات
+   ========================================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-normal);
+}
+
+/* ==========================================================================
+   التصميم المتجاوب
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .header h1 {
+        font-size: 1.8em;
+    }
+
+    .nav-tabs {
+        flex-direction: column;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 2% auto;
+    }
+}
+/* أنماط إدارة أنواع العلف */
+.feed-types-management {
+    padding: 20px;
+}
+
+.meal-plan-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.meal-plan-card h4 {
+    margin-top: 0;
+    color: #495057;
+}
+
+.feed-types-list {
+    margin: 15px 0;
+}
+
+.feed-type-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.feed-type-select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.feed-percentage {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.meal-total {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.meal-detail-card {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.feed-settings-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 16px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: #495057;
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.feed-settings-tab {
+    padding: 20px 0;
+}
+
+.pen-actions button {
+    margin: 0 2px;
+}
+/* أنماط النوافذ المنبثقة */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    background-color: #f0f0f0;
+}
+
+/* أنماط إدارة أنواع العلف */
+.feed-types-management {
+    padding: 20px;
+}
+
+.meal-plan-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.meal-plan-card h4 {
+    margin-top: 0;
+    color: #495057;
+}
+
+.feed-types-list {
+    margin: 15px 0;
+}
+
+.feed-type-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.feed-type-select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.feed-percentage {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.meal-total {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.meal-detail-card {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.feed-settings-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 16px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: #495057;
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.feed-settings-tab {
+    padding: 20px 0;
+}
+
+.pen-actions button {
+    margin: 0 2px;
+}
+/* أنماط النقل الجماعي */
+.sheep-checkbox {
+    cursor: pointer;
+}
+
+#batchControls {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* أنماط نافذة النقل السريع */
+.transfer-sections {
+    display: grid;
+    gap: 20px;
+}
+
+.transfer-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.sheep-item {
+    display: block;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.sheep-item:hover {
+    background: #e9ecef;
+}
+
+.sheep-item input {
+    margin-left: 10px;
+}
+
+.selected-count {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.select-all-row {
+    padding: 10px;
+    background: #e9ecef;
+    margin-bottom: 10px;
+}
+
+.sheep-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+}
+.select2-container--default .select2-selection--single {
+    height: 38px;
+    line-height: 38px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-right: 8px;
+    padding-left: 20px;
+}
+
+.select2-dropdown {
+    direction: rtl;
+}
+.sheep-card-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+}
+
+.sheep-card-header h3 {
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.sheep-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.info-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.info-section h4 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.timeline-section {
+    margin: 20px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3498db;
+}
+
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    width: 2px;
+    height: calc(100% + 10px);
+    background: #e0e0e0;
+}
+
+.timeline-item:last-child::after {
+    display: none;
+}
+
+.timeline-date {
+    font-weight: bold;
+    color: #3498db;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.chart-container {
+    margin: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.print-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+@media print {
+    .nav-tabs, .print-button, #sheepCardSearch, button {
+        display: none !important;
+    }
+    
+    .sheep-card-header {
+        background: #2c3e50 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+.family-tree {
+    margin: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+}
+
+.tree-node {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border: 2px solid #2196f3;
+}
+
+.mother-info {
+    background: #fce4ec;
+    border-color: #e91e63;
+}
+
+.children-list {
+    margin-top: 20px;
+    padding-right: 40px;
+}
+
+.no-data {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-style: italic;
+}
+.upcoming-event {
+    background-color: #fff3cd;
+}
+
+.overdue-event {
+    background-color: #f8d7da;
+}
+
+.today-event {
+    background-color: #d1ecf1;
+}
+
+.event-days-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.days-positive {
+    background: #d4edda;
+    color: #155724;
+}
+
+.days-negative {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.days-today {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.schedule-button {
+    position: fixed;
+    bottom: 80px;
+    left: 20px;
+    z-index: 100;
+}
