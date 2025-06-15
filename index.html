@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مزرعة الأغنام</title>
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐑</text></svg>">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🐑 نظام إدارة مزرعة الأغنام</h1>
+            <p>نظام شامل لتتبع وإدارة الأغنام في المزرعة</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="UI.showTab('dashboard', event)">لوحة التحكم</button>
+            <button class="nav-tab" onclick="UI.showTab('add', event)">إضافة خروف</button>
+            <button class="nav-tab" onclick="UI.showTab('manage', event)">إدارة الأغنام</button>
+            <button class="nav-tab" onclick="UI.showTab('pens', event)">الحظائر</button>
+            <button class="nav-tab" onclick="UI.showTab('weights', event)">إدارة الأوزان</button>
+            <button class="nav-tab" onclick="UI.showTab('pregnancy', event)">الحمل والولادة</button>
+            <button class="nav-tab" onclick="UI.showTab('production', event)">الدورة الإنتاجية</button>
+            <button class="nav-tab" onclick="UI.showTab('sheepCard', event)">بطاقة الخروف</button>
+            <button class="nav-tab" onclick="UI.showTab('events', event)">الأحداث</button>
+            <button class="nav-tab" onclick="UI.showTab('finance', event)">المالية</button>
+            <button class="nav-tab" onclick="UI.showTab('reports', event)">التقارير</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSheep">0</div>
+                    <div class="stat-label">إجمالي الأغنام</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="aliveSheep">0</div>
+                    <div class="stat-label">الأغنام الحية</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="maleCount">0</div>
+                    <div class="stat-label">الذكور</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="femaleCount">0</div>
+                    <div class="stat-label">الإناث</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="deadCount">0</div>
+                    <div class="stat-label">المتوفية</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="soldCount">0</div>
+                    <div class="stat-label">المباعة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="mothersCount">0</div>
+                    <div class="stat-label">الأمهات (إناث بالغة)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="ramsCount">0</div>
+                    <div class="stat-label">الفحول (ذكور بالغة)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pregnantCount">0</div>
+                    <div class="stat-label">حوامل حالياً</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="upcomingBirths">0</div>
+                    <div class="stat-label">ولادات متوقعة (7 أيام)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalPens">0</div>
+                    <div class="stat-label">عدد الحظائر</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDailyFeed">0 كجم</div>
+                    <div class="stat-label">العلف اليومي المطلوب</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Sheep Tab -->
+        <div id="add" class="tab-content">
+            <div id="alertContainer"></div>
+            <form id="sheepForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="id">المعرف (رقم الخروف)</label>
+                        <input type="text" id="id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">العمر (محسوب تلقائياً)</label>
+                        <input type="text" id="age" readonly placeholder="سيتم حسابه من تاريخ الولادة">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">الجنس</label>
+                        <select id="gender" required>
+                            <option value="">اختر الجنس</option>
+                            <option value="ذكر">ذكر</option>
+                            <option value="أنثى">أنثى</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mother">الأم (معرف الأم)</label>
+                        <select id="mother">
+                            <option value="">اختر الأم (اختياري)</option>
+                        </select>
+                        <div class="help-text">سيتم تحديث عدد الولادات تلقائياً للأم المختارة</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">الوزن الابتدائي (كيلو)</label>
+                        <input type="number" id="weight" step="0.1" min="0">
+                        <div class="help-text">يمكنك إضافة أوزان جديدة لاحقاً من تبويب إدارة الأوزان</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate">تاريخ الولادة</label>
+                        <input type="date" id="birthDate" onchange="SheepManager.updateAgeField()">
+                    </div>
+                    <div class="form-group">
+                        <label for="purchaseDate">تاريخ الشراء</label>
+                        <input type="date" id="purchaseDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="stage">المرحلة</label>
+                        <select id="stage">
+                            <option value="">اختر المرحلة (تلقائي حسب العمر)</option>
+                            <option value="مولود">مولود (أقل من 90 يوم)</option>
+                            <option value="طلي">طلي (ذكر 3-8 شهور)</option>
+                            <option value="رخل">رخل (أنثى 3-8 شهور)</option>
+                            <option value="بالغ">بالغ (8-12 شهر)</option>
+                            <option value="كبير السن">كبير السن (أكثر من سنة)</option>
+                        </select>
+                        <div class="help-text">سيتم تحديد المرحلة تلقائياً بناءً على العمر والجنس</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthCount">عدد الولادات</label>
+                        <input type="number" id="birthCount" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="pen">الشبك (الحظيرة) *</label>
+                        <select id="pen" required>
+                            <option value="">اختر الحظيرة</option>
+                        </select>
+                        <div class="help-text">اختر الحظيرة التي سيوضع فيها الخروف</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deathDate">تاريخ الوفاة</label>
+                        <input type="date" id="deathDate" onchange="SheepManager.updateStatusBasedOnDates()">
+                        <div class="help-text">عند إضافة تاريخ الوفاة سيتم تغيير الحالة إلى "متوفي" تلقائياً</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="saleDate">تاريخ البيع</label>
+                        <input type="date" id="saleDate" onchange="SheepManager.updateStatusBasedOnDates()">
+                        <div class="help-text">عند إضافة تاريخ البيع سيتم تغيير الحالة إلى "مباع" تلقائياً</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">التواجد</label>
+                        <select id="status" required>
+                            <option value="موجود">موجود</option>
+                            <option value="متوفي">متوفي</option>
+                            <option value="مباع">مباع</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">إضافة الخروف</button>
+                    <button type="button" class="btn btn-warning" onclick="SheepManager.clearForm()">مسح النموذج</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Manage Sheep Tab -->
+        <div id="manage" class="tab-content">
+            <input type="text" class="search-box" id="searchInput"
+                placeholder="البحث بالمعرف، الجنس، المرحلة، أو التواجد...">
+
+            <div class="table-container">
+                <table class="data-table" id="sheepTable">
+                    <thead>
+                        <tr>
+                            <th>المعرف</th>
+                            <th>العمر</th>
+                            <th>الجنس</th>
+                            <th>الأم</th>
+                            <th>الوزن الحالي</th>
+                            <th>تاريخ الولادة</th>
+                            <th>تاريخ الشراء</th>
+                            <th>المرحلة</th>
+                            <th>عدد الولادات</th>
+                            <th>الشبك</th>
+                            <th>تاريخ الوفاة</th>
+                            <th>تاريخ البيع</th>
+                            <th>التواجد</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sheepTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pens Tab -->
+        <div id="pens" class="tab-content">
+            <h2>إدارة الحظائر</h2>
+            <p>إدارة الحظائر وتوزيع الأغنام وحساب احتياجات العلف</p>
+            
+            <!-- أزرار وإعدادات -->
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-success" onclick="PensManager.openModal()">+ إضافة حظيرة</button>
+                <button class="btn btn-info" onclick="PensManager.openFeedSettingsModal()">⚙️ إعدادات العلف</button>
+            </div>
+            
+            <!-- قائمة الحظائر -->
+            <div class="pen-grid" id="pensGrid">
+                <!-- سيتم ملؤها ديناميكياً -->
+            </div>
+        </div>
+
+        <!-- Weights Management Tab -->
+        <div id="weights" class="tab-content">
+            <h2>إدارة أوزان الأغنام</h2>
+            <p>اختر خروفاً لإضافة وزن جديد أو عرض تاريخ الأوزان</p>
+            
+            <input type="text" class="search-box" id="weightSearchInput"
+                placeholder="البحث عن خروف بالمعرف...">
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>المعرف</th>
+                            <th>الجنس</th>
+                            <th>الوزن الحالي</th>
+                            <th>آخر وزن مسجل</th>
+                            <th>عدد الأوزان المسجلة</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weightsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pregnancy and Birth Tab -->
+        <div id="pregnancy" class="tab-content">
+            <h2>تسجيل الحمل والولادة</h2>
+            <p>سجل ومتابعة حالات الحمل والولادة للإناث</p>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-success" onclick="PregnancyManager.openModal()">+ تسجيل حمل جديد</button>
+                <select class="search-box" id="pregnancyStatusFilter" onchange="PregnancyManager.filterPregnancies()" style="width: 200px; margin-right: 10px;">
+                    <option value="">جميع الحالات</option>
+                    <option value="حامل">حامل حالياً</option>
+                    <option value="ولدت">ولدت</option>
+                    <option value="متوقع">ولادة متوقعة قريباً</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>معرف الأنثى</th>
+                            <th>تاريخ الحمل</th>
+                            <th>تاريخ الولادة المتوقع</th>
+                            <th>تاريخ الولادة الفعلي</th>
+                            <th>عدد المواليد</th>
+                            <th>الحالة</th>
+                            <th>الأيام المتبقية/المنقضية</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pregnancyTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Production Cycle Tab -->
+        <div id="production" class="tab-content">
+            <h2>تحليل الدورة الإنتاجية للإناث</h2>
+            <p>متابعة الأداء الإنتاجي والدورات الإنجابية للإناث</p>
+            
+            <div class="stats-grid" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-number" id="avgProductionCycle">0</div>
+                    <div class="stat-label">متوسط الدورة الإنتاجية (يوم)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgBirthsPerYear">0</div>
+                    <div class="stat-label">متوسط المواليد/السنة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="readyForMating">0</div>
+                    <div class="stat-label">جاهزة للتزاوج</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="productiveFemales">0</div>
+                    <div class="stat-label">إناث منتجة</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>معرف الأنثى</th>
+                            <th>العمر</th>
+                            <th>آخر حمل</th>
+                            <th>آخر ولادة</th>
+                            <th>أيام من آخر ولادة</th>
+                            <th>الحالة الإنتاجية</th>
+                            <th>عدد الدورات</th>
+                            <th>متوسط الدورة (يوم)</th>
+                            <th>المواليد/السنة</th>
+                            <th>إجمالي المواليد</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productionTableBody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                <h4>ملاحظات:</h4>
+                <ul style="margin: 0; padding-right: 20px;">
+                    <li>الدورة الإنتاجية = الفترة من الولادة حتى الولادة التالية</li>
+                    <li>الأنثى جاهزة للتزاوج بعد 45-60 يوم من الولادة</li>
+                    <li>فترة الحمل المتوقعة: 149 يوم</li>
+                    <li>الدورة المثالية: 200-220 يوم (ولادتين في السنة)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 2. أضف محتوى الصفحة الجديدة بعد tab "production" -->
+<div id="sheepCard" class="tab-content">
+    <h2>بطاقة الخروف</h2>
+    <p>ابحث عن خروف لعرض جميع معلوماته وتاريخه الكامل</p>
+    
+    <!-- قسم البحث -->
+    <div style="margin-bottom: 30px;">
+        <div class="form-group" style="max-width: 500px; margin: 0 auto;">
+            <label for="sheepCardSearch">البحث عن الخروف</label>
+            <div style="display: flex; gap: 10px;">
+                <select id="sheepCardSearch" class="form-control" style="flex: 1;">
+                    <option value="">اختر الخروف...</option>
+                </select>
+                <button class="btn btn-primary" onclick="SheepCard.loadSheepDetails()">عرض البطاقة</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- محتوى البطاقة -->
+    <div id="sheepCardContent" style="display: none;">
+        <!-- سيتم ملؤه ديناميكياً -->
+    </div>
+</div>
+
+        <!-- Events Tab -->
+        <div id="events" class="tab-content">
+            <h2>إدارة الأحداث</h2>
+            <p>سجل وتتبع جميع الأحداث المتعلقة بالأغنام (قص الصوف، العلاج، التطعيمات، وغيرها)</p>
+            
+            <div style="margin-bottom: 20px;">
+                <input type="text" class="search-box" id="eventSearchInput"
+                    placeholder="البحث عن خروف بالمعرف..." style="width: 48%; margin-left: 2%;">
+                <select class="search-box" id="eventTypeFilter" onchange="EventsManager.filterEvents()" style="width: 48%;">
+                    <option value="">جميع أنواع الأحداث</option>
+                    <option value="قص صوف">قص صوف</option>
+                    <option value="علاج">علاج</option>
+                    <option value="تطعيم">تطعيم</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+            </div>
+        
+            <!-- إحصائيات سريعة -->
+            <div class="stats-grid" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEventsCount">0</div>
+                    <div class="stat-label">إجمالي الأحداث</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayEventsCount">0</div>
+                    <div class="stat-label">أحداث اليوم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="upcomingEventsCount">0</div>
+                    <div class="stat-label">أحداث قادمة (7 أيام)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="overdueEventsCount">0</div>
+                    <div class="stat-label">أحداث متأخرة</div>
+                </div>
+            </div>
+        
+            <!-- الأحداث القادمة -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="color: #e74c3c;">🔔 الأحداث القادمة والمتأخرة</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>المعرف</th>
+                                <th>نوع الحدث</th>
+                                <th>تاريخ الحدث</th>
+                                <th>الأيام المتبقية</th>
+                                <th>الملاحظات</th>
+                                <th>العمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="upcomingEventsTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: #6c757d;">
+                                    لا توجد أحداث قادمة مجدولة
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        
+            <!-- الأحداث السابقة -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="color: #27ae60;">✅ الأحداث السابقة</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>المعرف</th>
+                                <th>نوع الحدث</th>
+                                <th>تاريخ الحدث</th>
+                                <th>منذ (أيام)</th>
+                                <th>الملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pastEventsTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 20px; color: #6c757d;">
+                                    لا توجد أحداث سابقة
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        
+            <!-- جدول إدارة الأحداث لكل خروف -->
+            <div>
+                <h3>إدارة أحداث الأغنام</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>المعرف</th>
+                                <th>الجنس</th>
+                                <th>عدد الأحداث</th>
+                                <th>آخر حدث</th>
+                                <th>تاريخ آخر حدث</th>
+                                <th>العمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- إضافة نافذة جدولة حدث جديد -->
+        <div id="scheduleEventModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="scheduleEventModalTitle">جدولة حدث قادم</h2>
+                    <button class="close" onclick="EventsManager.closeScheduleModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="scheduleEventForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="scheduleSheepId">الخروف</label>
+                                <select id="scheduleSheepId" required>
+                                    <option value="">اختر الخروف</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleEventType">نوع الحدث</label>
+                                <select id="scheduleEventType" required>
+                                    <option value="">اختر نوع الحدث</option>
+                                    <option value="قص صوف">قص صوف</option>
+                                    <option value="علاج">علاج</option>
+                                    <option value="تطعيم">تطعيم</option>
+                                    <option value="أخرى">أخرى</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleEventDate">تاريخ الحدث المخطط</label>
+                                <input type="date" id="scheduleEventDate" required min="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="scheduleEventNotes">ملاحظات</label>
+                                <textarea id="scheduleEventNotes" rows="3" placeholder="ملاحظات اختيارية..."></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">حفظ</button>
+                            <button type="button" class="btn btn-warning" onclick="EventsManager.closeScheduleModal()">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Finance Tab -->
+        <div id="finance" class="tab-content">
+            <h2>إدارة المعاملات المالية</h2>
+            <p>سجل وتتبع جميع المصروفات والمدخولات المتعلقة بالمزرعة</p>
+            
+            <!-- ملخص مالي -->
+            <div class="stats-grid" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalIncome" style="color: var(--success-color);">0</div>
+                    <div class="stat-label">إجمالي المدخولات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalExpense" style="color: var(--danger-color);">0</div>
+                    <div class="stat-label">إجمالي المصروفات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="netBalance">0</div>
+                    <div class="stat-label">الرصيد الصافي</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="transactionCount">0</div>
+                    <div class="stat-label">عدد المعاملات</div>
+                </div>
+            </div>
+            
+            <!-- أزرار وفلاتر -->
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-success" onclick="FinanceManager.openModal('income')">+ إضافة مدخول</button>
+                <button class="btn btn-danger" onclick="FinanceManager.openModal('expense')">- إضافة مصروف</button>
+                
+                <select class="search-box" id="financeTypeFilter" onchange="FinanceManager.filterTransactions()" style="width: 150px;">
+                    <option value="">جميع الأنواع</option>
+                    <option value="income">مدخولات</option>
+                    <option value="expense">مصروفات</option>
+                </select>
+                
+                <select class="search-box" id="financeCategoryFilter" onchange="FinanceManager.filterTransactions()" style="width: 200px;">
+                    <option value="">جميع الفئات</option>
+                </select>
+                
+                <input type="date" class="search-box" id="financeFromDate" onchange="FinanceManager.filterTransactions()" style="width: 150px;">
+                <input type="date" class="search-box" id="financeToDate" onchange="FinanceManager.filterTransactions()" style="width: 150px;">
+            </div>
+            
+            <!-- جدول المعاملات -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>النوع</th>
+                            <th>الفئة</th>
+                            <th>المبلغ</th>
+                            <th>الوصف</th>
+                            <th>الخروف المرتبط</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financeTableBody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ملخص حسب الفئات -->
+            <div style="margin-top: 30px;">
+                <h3>ملخص حسب الفئات</h3>
+                <div id="categorySummary" class="stats-grid">
+                    <!-- سيتم ملؤها ديناميكياً -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="avgAge">0</div>
+                    <div class="stat-label">متوسط العمر (يوم)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgWeight">0</div>
+                    <div class="stat-label">متوسط الوزن الحالي (كيلو)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBirths">0</div>
+                    <div class="stat-label">إجمالي الولادات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="mothersCountReport">0</div>
+                    <div class="stat-label">عدد الأمهات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalWeightRecords">0</div>
+                    <div class="stat-label">إجمالي سجلات الوزن</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEvents">0</div>
+                    <div class="stat-label">إجمالي الأحداث</div>
+                </div>
+            </div>
+
+            <div class="report-actions">
+                <button class="btn btn-primary" onclick="Reports.exportData()">تصدير البيانات (JSON)</button>
+                <button class="btn btn-info" onclick="Reports.updateStagesManually()">تحديث المراحل الآن</button>
+                <button class="btn btn-warning" onclick="Reports.clearAllData()">مسح جميع البيانات</button>
+                <button class="btn btn-success" onclick="Reports.addSampleData()">إضافة بيانات تجريبية</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weight Modal -->
+    <div id="weightModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">إدارة وزن الخروف</h2>
+                <button class="close" onclick="WeightManager.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="weightModalContent">
+                    <!-- سيتم ملء المحتوى ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Modal -->
+    <div id="eventsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventsModalTitle">إدارة أحداث الخروف</h2>
+                <button class="close" onclick="EventsManager.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="eventsModalContent">
+                    <!-- سيتم ملء المحتوى ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pregnancy Modal -->
+    <div id="pregnancyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="pregnancyModalTitle">تسجيل حمل جديد</h2>
+                <button class="close" onclick="PregnancyManager.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="pregnancyModalContent">
+                    <form id="pregnancyForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="pregnantSheepId">الأنثى الحامل</label>
+                                <select id="pregnantSheepId" required onchange="PregnancyManager.updateInfo()">
+                                    <option value="">اختر الأنثى</option>
+                                </select>
+                                <div class="help-text">يتم عرض الإناث البالغة فقط</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pregnancyDate">تاريخ الحمل</label>
+                                <input type="date" id="pregnancyDate" required onchange="PregnancyManager.calculateExpectedBirthDate()">
+                            </div>
+                            <div class="form-group">
+                                <label for="expectedBirthDate">تاريخ الولادة المتوقع</label>
+                                <input type="date" id="expectedBirthDate" readonly>
+                                <div class="help-text">يحسب تلقائياً (149 يوم من تاريخ الحمل)</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="actualBirthDate">تاريخ الولادة الفعلي</label>
+                                <input type="date" id="actualBirthDate" onchange="PregnancyManager.toggleBirthFields()">
+                                <div class="help-text">اتركه فارغاً إذا لم تتم الولادة بعد</div>
+                            </div>
+                            <div class="form-group" id="birthCountGroup" style="display: none;">
+                                <label for="birthCountPregnancy">عدد المواليد</label>
+                                <input type="number" id="birthCountPregnancy" min="1" max="5" value="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="pregnancyNotes">ملاحظات</label>
+                                <textarea id="pregnancyNotes" rows="3" placeholder="ملاحظات اختيارية..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div id="sheepInfoDiv" style="display: none; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                            <h4>معلومات الأنثى</h4>
+                            <p id="sheepInfoText"></p>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">حفظ</button>
+                            <button type="button" class="btn btn-warning" onclick="PregnancyManager.closeModal()">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pen Modal -->
+    <div id="penModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="penModalTitle">إضافة حظيرة جديدة</h2>
+                <button class="close" onclick="PensManager.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="penForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="penId">معرف الحظيرة</label>
+                            <input type="text" id="penId" required placeholder="مثال: A1, B2">
+                        </div>
+                        <div class="form-group">
+                            <label for="penName">اسم الحظيرة</label>
+                            <input type="text" id="penName" required placeholder="مثال: حظيرة الفحول">
+                        </div>
+                        <div class="form-group">
+                            <label for="penCapacity">السعة القصوى</label>
+                            <input type="number" id="penCapacity" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="penMeals">عدد الوجبات اليومية</label>
+                            <input type="number" id="penMeals" min="1" max="5" value="2" required>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="penNotes">ملاحظات</label>
+                            <textarea id="penNotes" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">حفظ</button>
+                        <button type="button" class="btn btn-warning" onclick="PensManager.closeModal()">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pen Details Modal -->
+    <div id="penDetailsModal" class="modal">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2 id="penDetailsTitle">تفاصيل الحظيرة</h2>
+                <button class="close" onclick="PensManager.closePenDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="penDetailsContent">
+                    <!-- سيتم ملؤه ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Settings Modal -->
+    <div id="feedSettingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إعدادات العلف حسب المرحلة</h2>
+                <button class="close" onclick="PensManager.closeFeedSettingsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>حدد كمية العلف اليومية بالكيلوجرام لكل مرحلة:</p>
+                <form id="feedSettingsForm">
+                    <div id="feedSettingsContent">
+                        <!-- سيتم ملؤه ديناميكياً -->
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">حفظ الإعدادات</button>
+                        <button type="button" class="btn btn-warning" onclick="PensManager.closeFeedSettingsModal()">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Types Modal -->
+    <div id="feedTypesModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 id="feedTypesModalTitle">إدارة أنواع العلف</h2>
+                <button class="close" onclick="PensManager.closeFeedTypesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="feedTypesModalContent">
+                    <!-- سيتم ملؤه ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finance Modal -->
+    <div id="financeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="financeModalTitle">إضافة معاملة مالية</h2>
+                <button class="close" onclick="FinanceManager.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="financeForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="transactionType">نوع المعاملة</label>
+                            <select id="transactionType" required onchange="FinanceManager.updateCategories()">
+                                <option value="">اختر النوع</option>
+                                <option value="income">مدخول</option>
+                                <option value="expense">مصروف</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionCategory">الفئة</label>
+                            <select id="transactionCategory" required>
+                                <option value="">اختر الفئة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionAmount">المبلغ</label>
+                            <input type="number" id="transactionAmount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionDate">التاريخ</label>
+                            <input type="date" id="transactionDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionSheep">الخروف المرتبط (اختياري)</label>
+                            <select id="transactionSheep">
+                                <option value="">بدون ربط</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="transactionDescription">الوصف</label>
+                            <textarea id="transactionDescription" rows="3" placeholder="وصف المعاملة..."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">حفظ</button>
+                        <button type="button" class="btn btn-warning" onclick="FinanceManager.closeModal()">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Pen Modal -->
+    <div id="batchPenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>نقل مجموعة أغنام إلى حظيرة</h2>
+                <button class="close" onclick="BatchPenManager.closeBatchPenModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="batchPenModalContent">
+                    <!-- سيتم ملؤه ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Transfer Modal -->
+    <div id="quickTransferModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>نقل الأغنام بين الحظائر</h2>
+                <button class="close" onclick="QuickPenTransfer.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="quickTransferContent">
+                    <!-- سيتم ملؤه ديناميكياً -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-message">
+            <div class="loading"></div>
+            <p>جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/auth.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cache.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/api-optimized.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/sheep.js"></script>
+    <script src="js/pens.js"></script>
+    <script src="js/weights.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/pregnancy.js"></script>
+    <script src="js/production.js"></script>
+    <script src="js/finance.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/ui-optimized.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/sheepCard.js"></script>
+</body>
+
+</html>

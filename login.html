@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - نظام إدارة مزارع الأغنام</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐑</text></svg>">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .features {
+            background: #f8f9fa;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 8px 0;
+            padding-right: 25px;
+            position: relative;
+        }
+
+        .features li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐑 نظام إدارة مزارع الأغنام</h1>
+            <p>نظام متكامل لإدارة مزرعتك بكفاءة</p>
+        </div>
+
+        <div class="auth-tabs">
+            <div class="auth-tab active" onclick="switchTab('login')">تسجيل الدخول</div>
+            <div class="auth-tab" onclick="switchTab('register')">حساب جديد</div>
+        </div>
+
+        <div class="form-container">
+            <div id="success-message" class="success-message"></div>
+            
+            <!-- نموذج تسجيل الدخول -->
+            <div id="login-form" class="form-section active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">اسم المستخدم أو البريد الإلكتروني</label>
+                        <input type="text" id="login-username" required>
+                        <div class="error-message" id="login-username-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">كلمة المرور</label>
+                        <input type="password" id="login-password" required>
+                        <div class="error-message" id="login-password-error"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                </form>
+                
+                <p class="info-text">
+                    ليس لديك حساب؟ <a href="#" onclick="switchTab('register')">سجل الآن</a>
+                </p>
+            </div>
+
+            <!-- نموذج التسجيل -->
+            <div id="register-form" class="form-section">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="reg-username">اسم المستخدم</label>
+                        <input type="text" id="reg-username" required minlength="3">
+                        <div class="error-message" id="reg-username-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-email">البريد الإلكتروني</label>
+                        <input type="email" id="reg-email" required>
+                        <div class="error-message" id="reg-email-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-password">كلمة المرور</label>
+                        <input type="password" id="reg-password" required minlength="6">
+                        <div class="error-message" id="reg-password-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-farm-name">اسم المزرعة</label>
+                        <input type="text" id="reg-farm-name" required>
+                        <div class="error-message" id="reg-farm-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-phone">رقم الهاتف (اختياري)</label>
+                        <input type="tel" id="reg-phone">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">إنشاء حساب</button>
+                </form>
+                
+                <p class="info-text">
+                    لديك حساب بالفعل؟ <a href="#" onclick="switchTab('login')">سجل دخولك</a>
+                </p>
+            </div>
+            
+            <div id="loading" class="loading"></div>
+        </div>
+
+        <div class="features">
+            <h3>مميزات النظام</h3>
+            <ul>
+                <li>إدارة كاملة لقطيع الأغنام</li>
+                <li>تتبع الأوزان والنمو</li>
+                <li>إدارة الحمل والولادة</li>
+                <li>حساب احتياجات العلف</li>
+                <li>التقارير المالية والإحصائية</li>
+                <li>نسخ احتياطي تلقائي</li>
+                <li>الوصول من أي جهاز</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // تبديل التبويبات
+        function switchTab(tab) {
+            // إخفاء جميع النماذج
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // إزالة الفعالية من جميع التبويبات
+            document.querySelectorAll('.auth-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            
+            // إظهار النموذج المحدد
+            document.getElementById(`${tab}-form`).classList.add('active');
+            
+            // تفعيل التبويب المحدد
+            event.target.classList.add('active');
+            
+            // مسح الرسائل
+            clearMessages();
+        }
+
+        // مسح رسائل الخطأ والنجاح
+        function clearMessages() {
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.style.display = 'none';
+                msg.textContent = '';
+            });
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        // إظهار رسالة خطأ
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        // إظهار رسالة نجاح
+        function showSuccess(message) {
+            const successElement = document.getElementById('success-message');
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+
+        // إظهار/إخفاء التحميل
+        function toggleLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // معالج تسجيل الدخول
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearMessages();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        deviceInfo: navigator.userAgent
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'فشل تسجيل الدخول');
+                }
+                
+                // حفظ الرمز والانتقال للصفحة الرئيسية
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                
+                showSuccess('تم تسجيل الدخول بنجاح! جاري التحويل...');
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+                
+            } catch (error) {
+                showError('login-username', error.message);
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        // معالج التسجيل
+        async function handleRegister(event) {
+            event.preventDefault();
+            clearMessages();
+            
+            const userData = {
+                username: document.getElementById('reg-username').value,
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value,
+                farmName: document.getElementById('reg-farm-name').value,
+                phone: document.getElementById('reg-phone').value
+            };
+            
+            // التحقق من كلمة المرور
+            if (userData.password.length < 6) {
+                showError('reg-password', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'فشل إنشاء الحساب');
+                }
+                
+                showSuccess('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول');
+                
+                // الانتقال لتبويب تسجيل الدخول
+                setTimeout(() => {
+                    document.querySelector('.auth-tab:first-child').click();
+                    document.getElementById('login-username').value = userData.username;
+                }, 2000);
+                
+            } catch (error) {
+                if (error.message.includes('اسم المستخدم')) {
+                    showError('reg-username', error.message);
+                } else if (error.message.includes('البريد')) {
+                    showError('reg-email', error.message);
+                } else {
+                    showError('reg-username', error.message);
+                }
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        // التحقق من وجود رمز مصادقة عند التحميل
+        window.onload = function() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // إذا كان هناك رمز، انتقل للصفحة الرئيسية
+                window.location.href = '/';
+            }
+        };
+    </script>
+</body>
+</html>
